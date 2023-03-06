@@ -32,12 +32,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $query = "SELECT emp_no FROM dept_manager WHERE emp_no = ?";
 
         if($stmt = $db-> prepare($query)){
-            $stmt-> bind_param("s", $param_id);
-            $param_id = $id;
+            $stmt-> bind_param("s", $id);
             if($stmt-> execute()){
                 $stmt-> store_result();
                 if($stmt-> num_rows == 1){
-                    if($password = "azerty"){
+                    if($password == "azerty"){
                         session_start();
 
                         $_SESSION["loggedin"] = true;
@@ -73,7 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" class="d-flex flex-column p-2 m-auto w-25 my-auto align-middle">
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" class="d-flex flex-column p-2 m-auto w-25 my-auto align-middle">
         <div class="form-group">
             <label for="exampleInputEmail1">Id: </label>
             <input type="text" name="id" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Id">
@@ -85,8 +84,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <?php 
-    if(!empty($login_err)){
-        echo '<div class="alert alert-danger">' . $login_err . '</div>';
+    if(!empty($login_error)){
+        echo '<div class="alert alert-danger">' . $login_error . '</div>';
     }        
     ?>
 </body>
