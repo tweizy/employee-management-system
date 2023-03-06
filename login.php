@@ -29,14 +29,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     //validate credentials entered
     if(empty($id_error) && empty($password_error)){
-        $query = "SELECT emp_no FROM dept_manager WHERE emp_no = ?";
-
+        $query = "SELECT emp_no, password FROM dept_manager WHERE emp_no = ?";
         if($stmt = $db-> prepare($query)){
             $stmt-> bind_param("s", $id);
             if($stmt-> execute()){
-                $stmt-> store_result();
-                if($stmt-> num_rows == 1){
-                    if($password == "azerty"){
+                $result = $stmt-> get_result();
+                if($result-> num_rows == 1){
+                    $row = $result->fetch_assoc();
+                    $real_password = $row["password"];
+                    if($password === $real_password){
                         session_start();
 
                         $_SESSION["loggedin"] = true;
