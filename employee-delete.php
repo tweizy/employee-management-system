@@ -13,6 +13,6 @@ $sql = "DELETE FROM employees WHERE emp_no = ?";
 if($stmt = $db->prepare($sql)){
     $stmt->bind_param("s", $_GET["emp_no"]);
     $stmt->execute();
-    header("location: test_dashboard.php");
+    header("location: dashboard.php");
 }
 ?>

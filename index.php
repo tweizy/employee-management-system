@@ -1,5 +1,5 @@
 <?php 
-header("location: test_dashboard.php");
+header("location: dashboard.php");
 
 echo "Homepage for the employee management system."
 ?>
