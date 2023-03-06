@@ -68,6 +68,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             <a href="changepassword.php" class="bg-success"><i class="fa-solid fa-lock fa-lg"></i>Change Password</a>
         </div>
     </div>
+
+    <div class="manager-info">
+        <?php
+        echo "<h6 style='margin-top: 30px; margin-left: 30px'>Hello ".$_SESSION["manager_fname"]." ".$_SESSION["manager_lname"]."</h6>";
+        echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>"
+        ?>
+    </div>
+
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -79,7 +87,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <?php
                     // Include config file
                     require_once "dbconnect.php";
-                    
                     // Attempt select query execution
                     $sql = "SELECT * FROM employees LIMIT 10";
                     if($result = $db->query($sql)){
