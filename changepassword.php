@@ -74,20 +74,20 @@ body{
 }
 .shape:first-child{
     background: linear-gradient(
-        #1845ad,
+        red,
         #23a2f6
     );
     left: -80px;
-    top: -80px;
+    top: 340px;
 }
 .shape:last-child{
     background: linear-gradient(
         to right,
-        #ff512f,
+        green,
         #f09819
     );
     right: -30px;
-    bottom: -80px;
+    bottom: 390px;
 }
 form{
     height: 500px;
