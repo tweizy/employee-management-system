@@ -37,7 +37,7 @@
                     require_once "dbconnect.php";
                     
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees JOIN salaries JOIN titles LIMIT 10";
+                    $sql = "SELECT * FROM employees LIMIT 10";
                     if($result = $db->query($sql)){
                         if($result->num_rows > 0){
                             echo '<table class="table table-bordered table-striped">';
@@ -49,6 +49,7 @@
                                         echo "<th>Last Name</th>";
                                         echo "<th>Gender</th>";
                                         echo "<th>Hire Date</th>";
+                                        echo "<th>Details</th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
@@ -60,6 +61,7 @@
                                         echo "<td>" . $row['last_name'] . "</td>";
                                         echo "<td>" . $row['gender'] . "</td>";
                                         echo "<td>" . $row['hire_date'] . "</td>";
+                                        echo "<td><a href='employee-details.php'>Details</a></td>";
                                         echo "<td>";
                                             echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
