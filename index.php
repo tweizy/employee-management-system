@@ -1,4 +1,6 @@
 <?php 
+header("location: dashboard.php");
+
 echo "Homepage for the employee management system."
 ?>
 <a href="dbconnect.php">Go to database connection page</a>
