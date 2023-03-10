@@ -61,7 +61,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </script>
 </head>
 <body>
-    <div class="header bg-primary">
+    <div class="header sticky-top bg-primary">
         <h2 class="title">Employee Management System</h2>
         <div>
             <a href="logout.php" class="bg-danger"><i class="fa-solid fa-right-from-bracket fa-lg"></i>Logout</a>
@@ -82,68 +82,76 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 <div class="col-md-15">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Employees Details</h2>
+                        # search by : 
                         <a href="create.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
                     </div>
                     <?php
                     // Include config file
                     require_once "dbconnect.php";
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees LIMIT 10";
-                    if($result = $db->query($sql)){
-                        if($result->num_rows > 0){
-                            echo '<table class="table table-bordered table-striped">';
-                                echo "<thead>";
-                                    echo "<tr>";
-                                        echo "<th>Emp No</th>";
-                                        echo "<th>Birth date</th>";
-                                        echo "<th>First Name</th>";
-                                        echo "<th>Last Name</th>";
-                                        echo "<th>Gender</th>";
-                                        echo "<th>Hire Date</th>";
-                                        echo "<th>Update</th>";
-                                    echo "</tr>";
-                                echo "</thead>";
-                                echo "<tbody>";
-                                while($row = $result->fetch_array()){
-                                    echo "<tr>";
-                                        echo "<td>" . $row['emp_no'] . "</td>";
-                                        echo "<td>" . $row['birth_date'] . "</td>";
-                                        echo "<td>" . $row['first_name'] . "</td>";
-                                        echo "<td>" . $row['last_name'] . "</td>";
-                                        echo "<td>" . $row['gender'] . "</td>";
-                                        echo "<td>" . $row['hire_date'] . "</td>";
-                                        echo "<td>";
-                                            echo '<a href="employee-details.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="View Employee Details" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="update.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="Update Employee" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
-                                            echo '<a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Delete Employee" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="fa fa-trash"></span></a>';
-                                            ?>
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Deletion Confirmation</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Do you really want to delete this employee ? <br> This action is irreversible
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <a href="employee-delete.php?emp_no=<?php echo $row['emp_no']?>"><button type="button" class="btn btn-primary">Confirm</button></a>
+                    $sql = "SELECT * FROM employees INNER JOIN titles on employees.emp_no = titles.emp_no WHERE titles.to_date = ? LIMIT 100";
+                    if ($stmt = $db->prepare($sql)){
+                        $dt = "9999-01-01";
+                        $stmt->bind_param('s', $dt);
+                        if($stmt->execute()){
+                            $result = $stmt->get_result();
+                            if($result->num_rows > 0){
+                                echo '<table class="table table-bordered table-striped">';
+                                    echo "<thead>";
+                                        echo "<tr>";
+                                            echo "<th>Emp No</th>";
+                                            echo "<th>Birth date</th>";
+                                            echo "<th>First Name</th>";
+                                            echo "<th>Last Name</th>";
+                                            echo "<th>Gender</th>";
+                                            echo "<th>Hire Date</th>";
+                                            echo "<th>Update</th>";
+                                        echo "</tr>";
+                                    echo "</thead>";
+                                    echo "<tbody>";
+                                    while($row = $result->fetch_array()){
+                                        echo "<tr>";
+                                            echo "<td>" . $row['emp_no'] . "</td>";
+                                            echo "<td>" . $row['birth_date'] . "</td>";
+                                            echo "<td>" . $row['first_name'] . "</td>";
+                                            echo "<td>" . $row['last_name'] . "</td>";
+                                            echo "<td>" . $row['gender'] . "</td>";
+                                            echo "<td>" . $row['hire_date'] . "</td>";
+                                            echo "<td>";
+                                                echo '<a href="employee-details.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="View Employee Details" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
+                                                echo '<a href="update.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="Update Employee" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                                echo '<a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Delete Employee" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="fa fa-trash"></span></a>';
+                                                ?>
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Deletion Confirmation</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Do you really want to delete this employee ? <br> This action is irreversible
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <a href="employee-delete.php?emp_no=<?php echo $row['emp_no']?>"><button type="button" class="btn btn-primary">Confirm</button></a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div> 
-                                        <?php
-                                        echo "</td>";
-                                    echo "</tr>";
-                                }
-                                echo "</tbody>";                            
-                            echo "</table>";
-                            // Free result set
-                            $result->free();
-                        } else{
-                            echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
+                                                </div> 
+    
+                                            <?php
+                                            echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";                            
+                                echo "</table>";
+                                // Free result set
+                                $result->free();
+                            } else{
+                                echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
+                            }
+
                         }
                     } else{
                         echo "Oops! Something went wrong. Please try again later.";
