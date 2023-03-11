@@ -137,8 +137,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                                             echo "<th>Salary</th>";
                                                             echo '<td>'.$row['salary'].' $'.'</td>';
                                                         echo "</tr>";
-                                                        
-                                                        
+                                                        echo "<tr>";
+                                                            echo "<th>Department Number</th>";
+                                                            echo '<td>'.$_SESSION["department"].'</td>';
+                                                        echo "</tr>";                                              
                                 echo "</tbody>";
                                                        
                                                     

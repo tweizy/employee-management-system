@@ -5,6 +5,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+if(isset($_GET['page']) && !empty($_GET['page'])){
+    $currentPage = (int) strip_tags($_GET['page']);
+}else{
+    $currentPage = 1;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -72,7 +78,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="manager-info">
         <?php
         echo "<h6 style='margin-top: 30px; margin-left: 30px'>Hello ".$_SESSION["manager_fname"]." ".$_SESSION["manager_lname"]."</h6>";
-        echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>"
+        echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>";
+        echo "<h6 style='margin-left: 30px'>Department: ".$_SESSION["department"]."</h6>";
         ?>
     </div>
 
@@ -82,17 +89,44 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 <div class="col-md-15">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Employees Details</h2>
-                        # search by : 
+                        searh by #
                         <a href="create.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
                     </div>
                     <?php
+                    
                     // Include config file
                     require_once "dbconnect.php";
+$number = "SELECT * FROM employees INNER JOIN titles INNER JOIN dept_emp on employees.emp_no = titles.emp_no AND employees.emp_no = dept_emp.emp_no  WHERE titles.to_date = ? AND dept_emp.dept_no = ?";
+
+// On prépare la requête
+$query = $db->prepare($number);
+
+$dt = "9999-01-01";
+$query->bind_param('ss', $dt, $_SESSION["department"]);
+
+// On exécute
+$query->execute();
+
+// On récupère le nombre d'articles
+$result = $query->get_result();
+
+$nbEmp= $result->num_rows;
+
+// On détermine le nombre d'articles par page
+$parPage = 50;
+
+// On calcule le nombre de pages total
+$pages = ceil($nbEmp / $parPage);
+
+// Calcul du 1er article de la page
+$premier = ($currentPage * $parPage) - $parPage;
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees INNER JOIN titles on employees.emp_no = titles.emp_no WHERE titles.to_date = ? LIMIT 100";
+                    $sql = "SELECT * FROM employees INNER JOIN titles INNER JOIN dept_emp on employees.emp_no = titles.emp_no AND employees.emp_no = dept_emp.emp_no  WHERE titles.to_date = ? AND dept_emp.dept_no = ? LIMIT ?, ?";
+                    // $result->num_rows;
+
                     if ($stmt = $db->prepare($sql)){
                         $dt = "9999-01-01";
-                        $stmt->bind_param('s', $dt);
+                        $stmt->bind_param('ssii', $dt, $_SESSION["department"], $premier, $parPage);
                         if($stmt->execute()){
                             $result = $stmt->get_result();
                             if($result->num_rows > 0){
@@ -106,6 +140,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                             echo "<th>Gender</th>";
                                             echo "<th>Hire Date</th>";
                                             echo "<th>Update</th>";
+
                                         echo "</tr>";
                                     echo "</thead>";
                                     echo "<tbody>";
@@ -161,6 +196,21 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     $db->close();
                     ?>
                 </div>
+                <nav>
+                    <ul class="pagination">
+                        <!-- Lien vers la page précédente (désactivé si on se trouve sur la 1ère page) -->
+                        <li class="page-item <?= ($currentPage == 1) ? "disabled" : "" ?>">
+                            <a href="dashboard.php?page=<?= $currentPage - 1 ?>" class="page-link">Previous</a>
+                        </li>
+                        <li class="page-item <?= ($currentPage == 1) ? "disabled" : "" ?>">
+                            <a href="" class="page-link">Page : <?php echo $currentPage ?></a>
+                        </li>
+                          <!-- Lien vers la page suivante (désactivé si on se trouve sur la dernière page) -->
+                          <li class="page-item <?= ($currentPage == $pages) ? "disabled" : "" ?>">
+                            <a href="dashboard.php?page=<?= $currentPage + 1 ?>" class="page-link">Next</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>        
         </div>
     </div>
