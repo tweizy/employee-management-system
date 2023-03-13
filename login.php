@@ -43,7 +43,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $id;
 
-                        $sql = "SELECT first_name, last_name, title, dept_no FROM employees INNER JOIN titles INNER JOIN dept_manager ON employees.emp_no = titles.emp_no AND employees.emp_no = dept_manager.emp_no AND titles.to_date ='9999-01-01' WHERE employees.emp_no = ?";
+                        $sql = "SELECT first_name, last_name, title, dept_no FROM employees INNER JOIN titles INNER JOIN dept_manager ON employees.emp_no = titles.emp_no AND employees.emp_no = dept_manager.emp_no AND titles.to_date ='9999-01-01'  WHERE employees.emp_no = ?";
                         $stmt = $db->prepare($sql);
                         $stmt->bind_param("s", $_SESSION["id"]);
                         if($stmt->execute()){
@@ -54,7 +54,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 $_SESSION["manager_lname"] = $row["last_name"];
                                 $_SESSION["manager_title"] = $row["title"];
                                 $_SESSION["department"] = $row["dept_no"];
-
+                                $query2 = $db->prepare("SELECT dept_name FROM departments WHERE dept_no = ?");
+                                $query2->bind_param("s", $row["dept_no"]);
+                                $query2->execute();
+                                $result = $query2->get_result();
+                                $row = $result->fetch_assoc();
+                                $_SESSION["department_name"] = $row['dept_name'];
                             }
                         }
                         

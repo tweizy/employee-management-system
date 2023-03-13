@@ -79,7 +79,8 @@ if(isset($_GET['page']) && !empty($_GET['page'])){
         <?php
         echo "<h6 style='margin-top: 30px; margin-left: 30px'>Hello ".$_SESSION["manager_fname"]." ".$_SESSION["manager_lname"]."</h6>";
         echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>";
-        echo "<h6 style='margin-left: 30px'>Department: ".$_SESSION["department"]."</h6>";
+        echo "<h6 style='margin-left: 30px'>Department: ".$_SESSION["department_name"]."</h6>";
+        
         ?>
     </div>
 
@@ -87,39 +88,50 @@ if(isset($_GET['page']) && !empty($_GET['page'])){
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-15">
-                    <div class="mt-5 mb-3 clearfix">
+                    <div class="mt-5 mb-3 clearfix add_emp">
                         <h2 class="pull-left">Employees Details</h2>
-                        searh by #
-                        <a href="create.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
+                            <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
+                                <input type="text" placeholder="Search by ID">
+                                <select name="emp_per_page" class="emp_det1">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </form>
+                            <a href="add-employee.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
+                        </div>
                     </div>
                     <?php
                     
                     // Include config file
                     require_once "dbconnect.php";
-$number = "SELECT * FROM employees INNER JOIN titles INNER JOIN dept_emp on employees.emp_no = titles.emp_no AND employees.emp_no = dept_emp.emp_no  WHERE titles.to_date = ? AND dept_emp.dept_no = ?";
+                    $number = "SELECT * FROM employees INNER JOIN titles INNER JOIN dept_emp  on employees.emp_no = titles.emp_no AND employees.emp_no = dept_emp.emp_no WHERE titles.to_date = ? AND dept_emp.dept_no = ?";
 
-// On prépare la requête
-$query = $db->prepare($number);
+                    // On prépare la requête
+                    $query = $db->prepare($number);
 
-$dt = "9999-01-01";
-$query->bind_param('ss', $dt, $_SESSION["department"]);
+                    $dt = "9999-01-01";
+                    $query->bind_param('ss', $dt, $_SESSION["department"]);
 
-// On exécute
-$query->execute();
+                    // On exécute
+                    $query->execute();
 
-// On récupère le nombre d'articles
-$result = $query->get_result();
+                    // On récupère le nombre d'articles
+                    $result = $query->get_result();
 
-$nbEmp= $result->num_rows;
+                    $nbEmp= $result->num_rows;
 
-// On détermine le nombre d'articles par page
-$parPage = 50;
+                    $limit = isset($_GET["limit"]) ? $_GET["limit"] : 10;
+                    // On détermine le nombre d'articles par page
+                    $parPage = isset($_POST["emp_per_page"]) ? $_POST["emp_per_page"] : $limit;
 
-// On calcule le nombre de pages total
-$pages = ceil($nbEmp / $parPage);
+                    // On calcule le nombre de pages total
+                    $pages = ceil($nbEmp / $parPage);
 
-// Calcul du 1er article de la page
-$premier = ($currentPage * $parPage) - $parPage;
+                    // Calcul du 1er article de la page
+                    $premier = ($currentPage * $parPage) - $parPage;
                     // Attempt select query execution
                     $sql = "SELECT * FROM employees INNER JOIN titles INNER JOIN dept_emp on employees.emp_no = titles.emp_no AND employees.emp_no = dept_emp.emp_no  WHERE titles.to_date = ? AND dept_emp.dept_no = ? LIMIT ?, ?";
                     // $result->num_rows;
@@ -140,7 +152,6 @@ $premier = ($currentPage * $parPage) - $parPage;
                                             echo "<th>Gender</th>";
                                             echo "<th>Hire Date</th>";
                                             echo "<th>Update</th>";
-
                                         echo "</tr>";
                                     echo "</thead>";
                                     echo "<tbody>";
@@ -154,7 +165,7 @@ $premier = ($currentPage * $parPage) - $parPage;
                                             echo "<td>" . $row['hire_date'] . "</td>";
                                             echo "<td>";
                                                 echo '<a href="employee-details.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="View Employee Details" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                                echo '<a href="update.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="Update Employee" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                                echo '<a href="employee-update.php?emp_no='. $row['emp_no'] .'" class="mr-3" title="Update Employee" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                                 echo '<a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Delete Employee" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="fa fa-trash"></span></a>';
                                                 ?>
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -200,14 +211,14 @@ $premier = ($currentPage * $parPage) - $parPage;
                     <ul class="pagination">
                         <!-- Lien vers la page précédente (désactivé si on se trouve sur la 1ère page) -->
                         <li class="page-item <?= ($currentPage == 1) ? "disabled" : "" ?>">
-                            <a href="dashboard.php?page=<?= $currentPage - 1 ?>" class="page-link">Previous</a>
+                            <a href="dashboard.php?page=<?= $currentPage - 1 ?>&limit=<?= $parPage ?>" class="page-link">Previous</a>
                         </li>
                         <li class="page-item <?= ($currentPage == 1) ? "disabled" : "" ?>">
                             <a href="" class="page-link">Page : <?php echo $currentPage ?></a>
                         </li>
                           <!-- Lien vers la page suivante (désactivé si on se trouve sur la dernière page) -->
                           <li class="page-item <?= ($currentPage == $pages) ? "disabled" : "" ?>">
-                            <a href="dashboard.php?page=<?= $currentPage + 1 ?>" class="page-link">Next</a>
+                            <a href="dashboard.php?page=<?= $currentPage + 1 ?>&limit=<?= $parPage ?>" class="page-link">Next</a>
                         </li>
                     </ul>
                 </nav>
