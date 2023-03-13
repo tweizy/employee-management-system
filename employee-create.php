@@ -96,7 +96,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
         <div class="form-group">
             <label for="salary">Gender: </label>
-            <input class="form-control"type="text" name="gender" >
+            <select name="gender" class="form-control" required>
+                <option value="" default >Select gender</option>
+                <option value="M" >Male</option>
+                <option value="F" >Female</option>
+            </select>
         </div>
 
         <div class="form-group">
