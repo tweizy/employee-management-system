@@ -59,6 +59,18 @@ if(isset($_GET['page']) && !empty($_GET['page'])){
             margin-left: 20px;
             text-decoration: none;
         }
+
+        .table-head{
+            display: flex;
+            justify-content: space-between;
+            width: 1160px;
+            align-items: center;
+        }
+
+        .table-head2{
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
     <script>
         $(document).ready(function(){
@@ -88,21 +100,22 @@ if(isset($_GET['page']) && !empty($_GET['page'])){
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-15">
-                    <div class="mt-5 mb-3 clearfix add_emp">
+                    <div class="mt-5 mb-3 clearfix table-head">
                         <h2 class="pull-left">Employees Details</h2>
+                        <div class="table-head2">
                             <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-                                <input type="text" placeholder="Search by ID">
                                 <select name="emp_per_page" class="emp_det1">
                                     <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                     <option value="100">100</option>
                                 </select>
-                                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <button style="width: 70px" type="submit" class="btn bg-primary text-light">Search</button>
                             </form>
-                            <a href="employee-create.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
+                            <a href="employee-create.php" class="btn bg-success pull-right" style="color:#eeeee4; margin-left: 40px"><i class="fa fa-plus"></i> Add New Employee</a>
                         </div>
                     </div>
+                </div>
                     <?php
                     
                     // Include config file
