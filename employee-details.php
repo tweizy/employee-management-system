@@ -77,7 +77,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="manager-info">
         <?php
         echo "<h6 style='margin-top: 30px; margin-left: 30px'>Hello ".$_SESSION["manager_fname"]." ".$_SESSION["manager_lname"]."</h6>";
-        echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>"
+        echo "<h6 style='margin-left: 30px'>ID: ".$_SESSION["id"]."</h6>";
+        echo "<h6 style='margin-left: 30px'>Department: ".$_SESSION["department"]."</h6>";
+
         ?>
     </div>
     <div class="wrapper">
