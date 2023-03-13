@@ -100,7 +100,7 @@ if(isset($_GET['page']) && !empty($_GET['page'])){
                                 </select>
                                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                             </form>
-                            <a href="add-employee.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
+                            <a href="employee-create.php" class="btn bg-success pull-right" style="color:#eeeee4"><i class="fa fa-plus"></i> Add New Employee</a>
                         </div>
                     </div>
                     <?php

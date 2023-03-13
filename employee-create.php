@@ -80,8 +80,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <h3 style="margin-top: 100px">Add employee:</h3>
 
         <div class="form-group">
+            <label for="employee-number">Employee Number: </label>
+            <input class="form-control"type="text" name="employee-number" >
+        </div>
+
+        <div class="form-group">
             <label for="first_name">First Name: </label>
-            <input class="form-control"type="text" name="fisrt_name" >
+            <input class="form-control"type="text" name="first_name" >
         </div>
 
         <div class="form-group">
@@ -92,6 +97,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="form-group">
             <label for="salary">Gender: </label>
             <input class="form-control"type="text" name="gender" >
+        </div>
+
+        <div class="form-group">
+            <label for="birdthdate">Birthdate: </label>
+            <input class="form-control"type="date" name="birthdate" >
         </div>
 
         <div class="form-group">
@@ -131,7 +141,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 
 
-        <button class="form-control bg-primary text-light" type="submit">Update</button>
+        <button class="form-control bg-primary text-light" type="submit">Add Employee</button>
     </form>
 </body>
 </html>

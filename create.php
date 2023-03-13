@@ -7,21 +7,29 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 require_once("dbconnect.php");
+$current_date = strval(date('y-m-d'));
+$employees_insert = "INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES (?, ?, ?, ?, ?, curdate())";
 
+$salary_insert = "INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES (?, ?, curdate(), '9999-01-01')";
 
+$dept_insert = "INSERT INTO dept_emp (emp_no, dept_no, from_date, to_date) VALUES (?, ?, curdate(), '9999-01-01')";
 
-$title_sql = "INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES (?, ?, ?, ?, ?, ?)";
-$salary_sql = "UPDATE salaries SET salary = ? WHERE emp_no = ?";
-$dept_sql = "UPDATE dept_emp SET dept_no = ? WHERE emp_no = ?";
+$title_insert = "INSERT INTO titles (emp_no, title, from_date, to_date) VALUES (?, ?, curdate(), '9999-01-01')";
 
-if(($title_sql = $db->prepare($title_sql)) && ($salary_sql = $db->prepare($salary_sql)) && ($dept_sql = $db->prepare($dept_sql))){
-    $title_sql->bind_param("ss", $_POST["title"],$_GET["emp_no"]);
-    $salary_sql->bind_param("ss", $_POST["salary"],$_GET["emp_no"]);
-    $dept_sql->bind_param("ss", $_POST["dept"],$_GET["emp_no"]);
-    $title_sql->execute();
-    $salary_sql->execute();
-    $dept_sql->execute();
-    header("location: dashboard.php");
+if(($employees_insert = $db->prepare($employees_insert)) && 
+   ($salary_insert = $db->prepare($salary_insert)) && 
+   ($dept_insert = $db->prepare($dept_insert)) && 
+   ($title_insert = $db->prepare($title_insert))){
+
+        $employees_insert->bind_param("sssss", $_POST["employee-number"],$_POST["birthdate"], $_POST["first_name"], $_POST["last_name"], $_POST["gender"]);
+        $salary_insert->bind_param("ss", $_POST["employee-number"], $_POST["salary"]);
+        $dept_insert->bind_param("ss", $_POST["employee-number"], $_SESSION["department"]);
+        $title_insert->bind_param("ss", $_POST["employee-number"], $_POST["title"]);
+        $employees_insert->execute();
+        $salary_insert->execute();
+        $dept_insert->execute();
+        $title_insert->execute();
+        header("location: dashboard.php");
 }
 ?>
 
